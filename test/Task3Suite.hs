@@ -49,7 +49,7 @@ task3Tests = testGroup "Task3"
             mapToList (minsert k v (tree :: Map Int Char)) ===
               case k `lookup` mapToList tree of
                 Nothing -> sortBy (comparing fst) ((k, v) : mapToList tree)
-                Just _  -> mapToList tree
+                Just _  -> sortBy (comparing fst) ((k, v) : deleteBy ((==) `on` fst) (k, undefined) (mapToList tree))
 
   , testProperty "mapToList (mdelete k tree) == deleteKey k (mapToList tree)" $
       withMaxSuccess 1000 $ counterexample "unexpected result for" $
