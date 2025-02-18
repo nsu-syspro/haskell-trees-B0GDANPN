@@ -8,7 +8,7 @@ module Task3 where
 import Prelude hiding (compare, foldl, foldr, Ordering(..))
 
 import Task1 (Tree(..))
-
+import Task2(Cmp, compare, listToBST, bstToList, tinsert, tlookup, tdelete)
 -- * Type definitions
 
 -- | Tree-based map
@@ -26,8 +26,7 @@ type Map k v = Tree (k, v)
 -- Leaf
 --
 listToMap :: Ord k => [(k, v)] -> Map k v
-listToMap = error "TODO: define listToMap"
-
+listToMap = listToBST cmpKeys
 -- | Conversion from 'Map' to association list sorted by key
 --
 -- Usage example:
@@ -38,7 +37,7 @@ listToMap = error "TODO: define listToMap"
 -- []
 --
 mapToList :: Map k v -> [(k, v)]
-mapToList = error "TODO: define mapToList"
+mapToList = bstToList
 
 -- | Searches given 'Map' for a value associated with given key
 --
@@ -53,7 +52,9 @@ mapToList = error "TODO: define mapToList"
 -- Nothing
 --
 mlookup :: Ord k => k -> Map k v -> Maybe v
-mlookup = error "TODO: define mlookup"
+mlookup k tree = case tlookup cmpKeys (k, undefined) tree of
+    Just (_, v) -> Just v
+    Nothing     -> Nothing
 
 -- | Inserts given key and value into given 'Map'
 --
@@ -70,8 +71,7 @@ mlookup = error "TODO: define mlookup"
 -- Branch (1,'X') Leaf Leaf
 --
 minsert :: Ord k => k -> v -> Map k v -> Map k v
-minsert = error "TODO: define minsert"
-
+minsert k v = tinsert cmpKeys (k, v)
 -- | Deletes given key from given 'Map'
 --
 -- Returns updated 'Map' if the key was present in it;
@@ -85,4 +85,8 @@ minsert = error "TODO: define minsert"
 -- Leaf
 --
 mdelete :: Ord k => k -> Map k v -> Map k v
-mdelete = error "TODO: define mdelete"
+mdelete key = tdelete cmpKeys (key, undefined)
+
+-- utils
+cmpKeys :: Ord k => Cmp (k, v)
+cmpKeys (keyLeft, _) (keyRight, _) = compare keyLeft keyRight
